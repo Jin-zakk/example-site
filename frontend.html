@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .get-news-button {
+        background: lightcoral;
+      }
+      .post-news-input {
+        background: lightgreen;
+      }
+      .news {
+        background: lightblue;
+      }
+    </style>
+  </head>
+  <body>
+      <h2>для просмотра запросов: f12 -> вкладка Network</h2>
+      <div class="news"></div>
+      <button class="get-news-button" onclick="onGetNews()">Получить новости</button>
+      <input placeholder="Текст новости" class="post-news-text-input" />
+      <button class="post-news-button" onclick="onPostNews()">Изменить новость</button>
+
+      <script>
+        async function onGetNews() {
+          // делаем запрос в апишку на получение новостей
+          const response = await fetch('/news', {
+            method: 'GET'
+          });
+          console.log('response: ', response);
+
+          const body = await response.json();
+          console.log('body: ', body);
+
+          const news = JSON.stringify(body);
+          console.log('news: ', news);
+
+          const newsDiv = document.querySelector(".news");
+          newsDiv.innerHTML = news;
+        }
+
+        async function onPostNews() {
+          const newsTextInput = document.querySelector(".post-news-text-input");
+
+          const newsText = newsTextInput.value;
+          console.log('newsText: ', newsText);
+
+          // делаем запрос в апишку на добавление новости
+          await fetch('/news', {
+            method: 'POST',
+            body: JSON.stringify({
+              news: newsText
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            },
+          });
+        }
+      </script>
+  </body>
+</html>
